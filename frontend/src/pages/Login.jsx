@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/authSlice";
+import { setUser } from "../redux/authSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
