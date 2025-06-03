@@ -8,18 +8,18 @@ import {
 } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
-import { setUser } from "../redux/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading, setUser } from "../redux/authSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const {loading} = useSelector(store=>store.auth)
   const navigate = useNavigate();
-
   const dispatch = useDispatch()
 
 
@@ -39,6 +39,7 @@ const Login = () => {
     console.log(input);
 
     try {
+     dispatch( setLoading(true))
       const res = await axios.post(
         `http://localhost:8000/api/v1/user/login`,
         input,
@@ -56,6 +57,9 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error.response.data.message);
+    }
+    finally{
+     dispatch( setLoading(false))
     }
   };
   return (
@@ -109,8 +113,16 @@ const Login = () => {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+            
               <Button type="submit" className="w-full ">
-                Login
+                {
+                  loading ? (
+                    <>
+                  <Loader2 className="mr-2 w-4 h-4 animate-spin"/>
+                  please wait...
+                    </>
+                  ) : ("Login")
+                }
               </Button>
               <p className="text-center text-gray-600 dark:text-gray-300">
                 Don't have an account?{" "}

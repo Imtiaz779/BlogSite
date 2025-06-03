@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -7,13 +7,32 @@ import { Search } from "lucide-react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useDispatch,useSelector } from "react-redux";
-import { toggleTheme } from "../redux/themeSlice";
+import { toggleTheme } from "../redux/themeSlice.js";
+import { toast } from "sonner";
+import { setUser } from "../redux/authSlice.js";
+import axios from "axios";
 
 
 const Navbar = () => {
   const {user} = useSelector(store=>store.auth)
   const {theme} = useSelector(store=>store.theme)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const logoutHandler = async (e)=>{
+    try {
+      const res = await axios.get(`http://localhost:8000/api/v1/user/logout`,{withCredentials:true})
+      if(res.data.success){
+        navigate("/")
+        dispatch(setUser(null))
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  }
+
+
   return (
     <div className="py-2 fixed w-full dark:bg-gray-800 dark:border-b-gray-600 border-b-gray-300 border-2 bg-white">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-0">
@@ -70,9 +89,9 @@ const Navbar = () => {
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                 <Link to={"/login"}>
-                  <Button>Logout</Button>
-                </Link>
+                 
+                  <Button onClick={logoutHandler}>Logout</Button>
+              
               </div>
             ) : (
               <div className="ml-7 md:flex gap-2">
