@@ -12,8 +12,7 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <ThemeProvider>
         <App />
-      </ThemeProvider>
-
+      </ThemeProvider> 
       <Toaster />
     </Provider>
   </StrictMode>
